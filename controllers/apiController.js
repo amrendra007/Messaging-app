@@ -66,6 +66,24 @@ router.post('/register', validator, (req, res, next) => {
     });
 });
 
+router.get('/success', (req, res, next) => {
+    console.log('req.user: --', req.user);
+    console.log('ident. --', req.isAuthenticated());
+    res.send('logged in successfully');
+});
+
+router.get('/failure', (req, res, next) => {
+    res.send('logged in failed, check your username or password');
+});
+
+//  login post route
+router.post('/login',
+    passport.authenticate('local', {
+        successRedirect: '/success',
+        failureRedirect: '/failure',
+    }));
+
+
 passport.serializeUser((id, done) => {
     done(null, id);
 });
