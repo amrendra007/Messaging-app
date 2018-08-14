@@ -1,20 +1,19 @@
-// const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 // const bcrypt = require('bcrypt');
-// const passport = require('passport');
+const passport = require('passport');
 // const LocalStrategy = require('passport-local');
-// const session = require('express-session');
-// const MongoStore = require('connect-mongo')(session);
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 require('dotenv').config();
 
 //!  requiring routes
 // const User = require('./models/userDb');
-const mainRoutes = require('./routes/main');
+const mainRoutes = require('./controllers/apiController');
 
 //!  database conn
 mongoose.connect(`${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASS}@ds121262.mlab.com:21262/local_message`, { useNewUrlParser: true });
@@ -27,19 +26,16 @@ db.once('open', () => {
 
 //! add maxage
 // app configuration
-// app.use(session({
-//     secret: 'fasgasfgasfgastrtsdsf',
-//     saveUninitialized: false,
-//     resave: false,
-//     store: new MongoStore({ mongooseConnection: mongoose.connection }),
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.use(express.static(path.join(__dirname, '/public')));
+app.use(session({
+    secret: 'fasgasfgasfgastrtsdsf',
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.set('view engine', 'ejs');
 
 
 //!  mounting route
@@ -71,8 +67,7 @@ app.use((req, res, next) => {
 });
 app.use((err, req, res, next) => {
     const message = { err };
-    const error = req.app.get('env') === 'development' ? err : {};
-    res.status(err.status || 500).send(`${error.status} \n ${message}`);
+    res.status(err.status || 500).json(message);
 });
 
 process.on('uncaughtException', (err) => {
