@@ -12,10 +12,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
     },
     firstName: {
+        trim: true,
         type: String,
         required: true,
     },
-    lastName: String,
+    lastName: {
+        trim: true,
+        type: String,
+        required: true,
+    },
 });
 
 module.exports = mongoose.model('User', UserSchema);
