@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const MessageSchema = new mongoose.Schema({
     subject: {
         type: String,
         required: true,
         trim: true,
     },
-    content: {
+    message: {
         trim: true,
         type: String,
         required: true,
@@ -18,4 +18,4 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Message', UserSchema);
+module.exports = mongoose.model('Message', MessageSchema);
