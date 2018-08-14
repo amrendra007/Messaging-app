@@ -55,4 +55,20 @@ router.post('/sendmessage', validator, (req, res, next) => {
     });
 });
 
+router.get('/inbox', (req, res, next) => {
+    console.log(req.user);
+    User.findOne({ username: req.user.username })
+        .populate('messages')
+        .exec((error, foundData) => {
+            if (error) {
+                return next(error);
+            }
+            const userMessages = foundData.messages.map(item => ({
+                subject: item.subject,
+                message: item.message,
+            }));
+            res.status(200).send(userMessages);
+        });
+});
+
 module.exports = router;
