@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message',
     }],
+    blockList: [String],
 });
 
 module.exports = mongoose.model('User', UserSchema);
