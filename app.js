@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const passport = require('passport');
-// const LocalStrategy = require('passport-local');
+const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
@@ -12,7 +12,7 @@ const app = express();
 require('dotenv').config();
 
 //!  requiring routes
-// const User = require('./models/userDb');
+const User = require('./models/userDb');
 const mainRoutes = require('./controllers/apiController');
 
 //!  database conn
@@ -42,21 +42,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', mainRoutes);
 
 //  PASSPORT local CONFIGRATION
-// passport.use(new LocalStrategy((username, password, done) => {
-//     User.findOne({ 'local.username': username }, (err, user) => {
-//         if (err) { return done(err); }
-//         if (!user) {
-//             return done(null, false, { message: 'Incorrect username.' });
-//         }
-//         const hash = user.local.password;
-//         bcrypt.compare(password, hash, (error, response) => {
-//             if (response === true) {
-//                 return done(null, user);
-//             }
-//             return done(null, false, { message: 'Incorrect password.' });
-//         });
-//     });
-// }));
+passport.use(new LocalStrategy((username, password, done) => {
+    User.findOne({ username }, (err, user) => {
+        if (err) { return done(err); }
+        if (!user) {
+            //  Incorrect username
+            return done(null, false);
+        }
+        const hash = user.password;
+        bcrypt.compare(password, hash, (error, response) => {
+            if (response === true) {
+                //  SUCCESSFUL LOGGED IN
+                return done(null, user);
+            }
+            // Incorrect password.
+            return done(null, false);
+        });
+    });
+}));
 
 
 // error handler
