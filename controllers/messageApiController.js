@@ -19,7 +19,15 @@ const validator = [
     sanitizeBody('*').trim().escape(),
 ];
 
-router.post('/sendmessage', validator, (req, res, next) => {
+//!  middleware
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(403).send('Please Log in first');
+}
+
+router.post('/sendmessage', isLoggedIn, validator, (req, res, next) => {
     console.log('body obj:', req.body);
     const errors = validationResult(req);
 
@@ -55,7 +63,7 @@ router.post('/sendmessage', validator, (req, res, next) => {
     });
 });
 
-router.get('/inbox', (req, res, next) => {
+router.get('/inbox', isLoggedIn, (req, res, next) => {
     console.log(req.user);
     User.findOne({ username: req.user.username })
         .populate('messages')
