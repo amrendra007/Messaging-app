@@ -13,7 +13,7 @@ require('dotenv').config();
 
 //!  requiring routes
 const User = require('./models/userDb');
-const mainRoutes = require('./controllers/apiController');
+const mainRoutes = require('./controllers/userApiController');
 
 //!  database conn
 mongoose.connect(`${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASS}@ds121262.mlab.com:21262/local_message`, { useNewUrlParser: true });
