@@ -13,7 +13,8 @@ require('dotenv').config();
 
 //!  requiring routes
 const User = require('./models/userDb');
-const mainRoutes = require('./controllers/userApiController');
+const userRoute = require('./controllers/userApiController');
+const messageRoute = require('./controllers/messageApiController');
 
 //!  database conn
 mongoose.connect(`${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASS}@ds121262.mlab.com:21262/local_message`, { useNewUrlParser: true });
@@ -39,7 +40,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 //!  mounting route
-app.use('/', mainRoutes);
+app.use('/', userRoute);
+app.use('/', messageRoute);
 
 //  PASSPORT local CONFIGRATION
 passport.use(new LocalStrategy((username, password, done) => {
