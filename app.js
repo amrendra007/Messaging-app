@@ -12,11 +12,9 @@ const mongoose = require('mongoose');
 const app = express();
 require('dotenv').config();
 
-//! requiring models
-// const User = require('./models/userDb');
-
 //!  requiring routes
-// const userRoutes = require('./routes/user');
+// const User = require('./models/userDb');
+const mainRoutes = require('./routes/main');
 
 //!  database conn
 mongoose.connect(`${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASS}@ds121262.mlab.com:21262/local_message`, { useNewUrlParser: true });
@@ -44,8 +42,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.set('view engine', 'ejs');
 
 
-//  mounting route
-// app.use('/', userRoutes);
+//!  mounting route
+app.use('/', mainRoutes);
 
 //  PASSPORT local CONFIGRATION
 // passport.use(new LocalStrategy((username, password, done) => {
@@ -72,10 +70,9 @@ app.use((req, res, next) => {
     next(err);
 });
 app.use((err, req, res, next) => {
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-    res.status(err.status || 500);
-    res.render('error', { title: 'Error' });
+    const message = { err };
+    const error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500).send(`${error.status} \n ${message}`);
 });
 
 process.on('uncaughtException', (err) => {
