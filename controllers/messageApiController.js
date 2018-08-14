@@ -28,7 +28,7 @@ function isLoggedIn(req, res, next) {
 }
 
 router.post('/sendmessage', isLoggedIn, validator, (req, res, next) => {
-    console.log('body obj:', req.body);
+    console.log('currentUser: ', req.user);
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -41,6 +41,10 @@ router.post('/sendmessage', isLoggedIn, validator, (req, res, next) => {
         }
         if (!foundUser) {
             return res.status(404).send('toUser not found');
+        }
+        console.log(foundUser);
+        if (foundUser.blockList.includes(req.user.username)) {
+            return res.status(403).send(`You are not allowed to send message to ${foundUser.username}`);
         }
         const oneMessage = {
             subject: req.body.subject,
@@ -77,6 +81,25 @@ router.get('/inbox', isLoggedIn, (req, res, next) => {
             }));
             res.status(200).send(userMessages);
         });
+});
+
+router.put('/block/:username', isLoggedIn, (req, res, next) => {
+    User.findOne({ username: req.user.username }, (error, foundUser) => {
+        if (error) {
+            return next(error);
+        }
+        if (foundUser.blockList.includes(req.params.username)) {
+            return res.send(`you have already blocked ${req.params.username}`);
+        }
+        foundUser.blockList.push(req.params.username);
+        foundUser.save((err, savedUser) => {
+            if (err) {
+                return next(err);
+            }
+            console.log(savedUser);
+            res.status(200).send(`you have successfully blocked ${req.params.username}`);
+        });
+    });
 });
 
 module.exports = router;
