@@ -75,12 +75,7 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json(message);
 });
 
-process.on('uncaughtException', (err) => {
-    console.log('Its a uncaught one: ', err);
-    process.exit(1);
-});
-
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log('server is running');
+    console.log('server runing');
 });

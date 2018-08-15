@@ -1,39 +1,16 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const { check, validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
+const { validationResult } = require('express-validator/check');
 
 const router = express.Router();
 const saltRounds = 10;
+
 const User = require('../models/userDb');
-
-//  validator middleware
-const validator = [
-    check('username').trim().isLength({ min: 6 })
-        .withMessage('Username must be of min 6 char long')
-        .custom(username => User.findOne({ username })
-            .then((user) => {
-                if (user) {
-                    return Promise.reject(new Error('Username already in use'));
-                }
-            }))
-        .withMessage('Username already in use'),
-
-    check('password').trim().isLength({ min: 6 })
-        .withMessage('password must be of min 6 char long'),
-
-    check('firstName').trim().isLength({ min: 1 })
-        .withMessage('FirstName should not be empty.'),
-
-    check('lastName').trim().isLength({ min: 1 })
-        .withMessage('LastName should not be empty.'),
-
-    sanitizeBody('*').trim().escape(),
-];
+const middleware = require('../middlewares/middleware');
 
 //  post route register
-router.post('/register', validator, (req, res, next) => {
+router.post('/register', middleware.registerRouteValidator, (req, res, next) => {
     console.log('body obj:', req.body);
     const errors = validationResult(req);
 
@@ -66,14 +43,14 @@ router.post('/register', validator, (req, res, next) => {
     });
 });
 
-router.get('/success', (req, res, next) => {
+router.get('/success', middleware.isLoggedIn, (req, res, next) => {
     console.log('req.user: --', req.user);
     console.log('ident. --', req.isAuthenticated());
     res.send('logged in successfully');
 });
 
 router.get('/failure', (req, res, next) => {
-    res.send('logged in failed, check your username or password');
+    res.send('plz check your username or password');
 });
 
 //  login post route

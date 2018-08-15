@@ -1,33 +1,13 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
+const { validationResult } = require('express-validator/check');
 
 const router = express.Router();
 const User = require('../models/userDb');
 const Message = require('../models/messageDb');
+const middleware = require('../middlewares/middleware');
 
-const validator = [
-    check('subject').trim().exists()
-        .withMessage('Subject shouldn\'t be blank'),
 
-    check('message').trim().exists()
-        .withMessage('Message shouldn\'t be blank'),
-
-    check('toUser').trim().exists()
-        .withMessage('toUser shouldn\'t be blank'),
-
-    sanitizeBody('*').trim().escape(),
-];
-
-//!  middleware
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.status(403).send('Please Log in first');
-}
-
-router.post('/sendmessage', isLoggedIn, validator, (req, res, next) => {
+router.post('/sendmessage', middleware.isLoggedIn, middleware.sendmessageRouteValidator, (req, res, next) => {
     console.log('currentUser: ', req.user);
     const errors = validationResult(req);
 
@@ -67,7 +47,7 @@ router.post('/sendmessage', isLoggedIn, validator, (req, res, next) => {
     });
 });
 
-router.get('/inbox', isLoggedIn, (req, res, next) => {
+router.get('/inbox', middleware.isLoggedIn, (req, res, next) => {
     console.log(req.user);
     User.findOne({ username: req.user.username })
         .populate('messages')
@@ -83,7 +63,7 @@ router.get('/inbox', isLoggedIn, (req, res, next) => {
         });
 });
 
-router.put('/block/:username', isLoggedIn, (req, res, next) => {
+router.put('/block/:username', middleware.isLoggedIn, (req, res, next) => {
     User.findOne({ username: req.user.username }, (error, foundUser) => {
         if (error) {
             return next(error);
