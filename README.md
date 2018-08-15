@@ -1,7 +1,9 @@
 # NODEJS ASSIGNMENT – MESSAGING APP
 PostMan API doucmmentation: <https://documenter.getpostman.com/view/4217902/RWTmvJrn>
 
-CASHPOSITIVE nodeJs assignment, following end-points and available operation with that.
+* CASHPOSITIVE nodeJs assignment
+
+following end-points and available operations with thst are as follows:
 
 ### 1. POST /register
 This api register and logged in user after successful registration.
