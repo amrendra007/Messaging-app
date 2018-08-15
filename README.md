@@ -1,10 +1,10 @@
 # NODEJS ASSIGNMENT – MESSAGING APP
 CASHPOSITIVE nodeJs assignment, following end-points and available operation with that.
 
-* POST /register - This api register and logged in user after successful registration
+1. POST /register - This api register and logged in user after successful registration
 Correct format of req. body with correct property name is required.
 
-### How to make req to register:
+#### How to make req to register:
 Properties of req.body to make successful post req - username, password, firstName, lastName
 username and password should be min. of 6 characters and firstName, lastName should not be blank.
 for example: 
@@ -16,9 +16,9 @@ for example:
         "lastName": "kumar"
     }
 
-* POST /login - This api checks authenticity of user
+2. POST /login - This api checks authenticity of user
 
-### How to make req to login:
+#### How to make req to login:
 provide your username and password like:
 
     {
@@ -26,10 +26,10 @@ provide your username and password like:
         "password": "qwert123"
     }
 
-* POST /sendmessage - Using this api endpoint a logged in user can send message to another user.
+3. POST /sendmessage - Using this api endpoint a logged in user can send message to another user.
 provide subject(subject of message), message(actual message), toUser(sender's username)
 
-### How to make req to send message:
+#### How to make req to send message:
 Example: 
 
     {
@@ -38,16 +38,16 @@ Example:
         "toUser": "amrendra"
     }
 
-* GET /inbox - This api retrieves all current logged in user's messages.
+4. GET /inbox - This api retrieves all current logged in user's messages.
 
-### How to make req to get all messages:
+#### How to make req to get all messages:
 Example:
 
 Log in first then make GET req to /inbox
 
-* PUT /block/{username} - Making req to this api block provided 'username' from sending message to you
+5. PUT /block/{username} - Making req to this api block provided 'username' from sending message to you
 
-### How to make req to block user
+#### How to make req to block user
 Example:
 
 Log in first then make 
@@ -66,3 +66,6 @@ PUT req to /block/amrendra007
 5. npm install
 6. node app.js , App is running on localhost:3000
 
+## Deployed link: 
+
+Heroku link: <https://messagebox.herokuapp.com/>
