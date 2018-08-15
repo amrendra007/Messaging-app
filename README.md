@@ -1,4 +1,6 @@
 # NODEJS ASSIGNMENT – MESSAGING APP
+PostMan API doucmmentation: <https://documenter.getpostman.com/view/4217902/RWTmvJrn>
+
 CASHPOSITIVE nodeJs assignment, following end-points and available operation with that.
 
 ### 1. POST /register
@@ -74,3 +76,5 @@ PUT req to /block/amrendra007
 ## Deployed link: 
 
 Heroku link: <https://messagebox.herokuapp.com/>
+
+
