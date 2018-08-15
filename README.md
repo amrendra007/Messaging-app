@@ -62,11 +62,11 @@ PUT req to /block/amrendra007
 1. Create mlab account <https://mlab.com/>
 2. create mlab data base add db username and password, copy url of db
 3. create a '.env' file inside Messaging-app/
-4. Add folling env variable to .env file
+4. Add following env variable to .env file
 
-    DB_HOST = 'mongodb://'
-    DB_USER= 'mlab-db_username'
-    DB_PASS= 'mlab-db_password'
+    >DB_HOST = 'mongodb://'
+    >DB_USER= 'mlab-db_username'
+    >DB_PASS= 'mlab-db_password'
 
 5. npm install
 6. node app.js , App is running on localhost:3000
