@@ -3,6 +3,7 @@ const { sanitizeBody } = require('express-validator/filter');
 
 const User = require('../models/userDb');
 
+// array of middleware to validate and filter data POST /register
 module.exports.registerRouteValidator = [
     check('username').trim().isLength({ min: 6 })
         .withMessage('Username must be of min 6 char long')
@@ -26,6 +27,7 @@ module.exports.registerRouteValidator = [
     sanitizeBody('*').trim().escape(),
 ];
 
+// array of middleware to validate POST /sendmessage
 module.exports.sendmessageRouteValidator = [
     check('subject').trim().exists()
         .withMessage('Subject shouldn\'t be blank'),
@@ -39,6 +41,7 @@ module.exports.sendmessageRouteValidator = [
     sanitizeBody('*').trim().escape(),
 ];
 
+// middleware to check whether user is authentic or not
 module.exports.isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) {
         return next();

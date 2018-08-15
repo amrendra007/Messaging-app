@@ -11,21 +11,19 @@ const MongoStore = require('connect-mongo')(session);
 const app = express();
 require('dotenv').config();
 
-//!  requiring routes
+//  Requiring routes and db
 const User = require('./models/userDb');
 const userRoute = require('./controllers/userApiController');
 const messageRoute = require('./controllers/messageApiController');
 
-//!  database conn
+// Db connection
 mongoose.connect(`${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASS}@ds121262.mlab.com:21262/local_message`, { useNewUrlParser: true });
-// mongoose.connect('mongodb://localhost:27017/right-click', { useNewUrlParser: true });
 
 const db = mongoose.connection;
 db.once('open', () => {
     console.log('connected to db');
 });
 
-//! add maxage
 // app configuration
 app.use(session({
     secret: 'fasgasfgasfgastrtsdsf',
@@ -38,12 +36,11 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
-//!  mounting route
+//  Mounting routes
 app.use('/', userRoute);
 app.use('/', messageRoute);
 
-//  PASSPORT local CONFIGRATION
+//  PASSPORT local-strategy to verify login
 passport.use(new LocalStrategy((username, password, done) => {
     User.findOne({ username }, (err, user) => {
         if (err) { return done(err); }
@@ -63,19 +60,18 @@ passport.use(new LocalStrategy((username, password, done) => {
     });
 }));
 
-
-// error handler
+// Not found error handler
 app.use((req, res, next) => {
     const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
+// error handling middleware
 app.use((err, req, res, next) => {
     const message = { err };
     res.status(err.status || 500).json(message);
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log('server runing');
-});
+app.listen(port);

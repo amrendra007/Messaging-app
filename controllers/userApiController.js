@@ -9,13 +9,11 @@ const saltRounds = 10;
 const User = require('../models/userDb');
 const middleware = require('../middlewares/middleware');
 
-//  post route register
+//  POST /register route
 router.post('/register', middleware.registerRouteValidator, (req, res, next) => {
-    console.log('body obj:', req.body);
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        console.log('errors', errors.array());
         return res.status(422).send(errors.array());
     }
     bcrypt.hash(req.body.password, saltRounds, (error, hash) => {
@@ -32,7 +30,6 @@ router.post('/register', middleware.registerRouteValidator, (req, res, next) => 
             if (err) {
                 return next(err);
             }
-            console.log('newUser', newUser);
             req.login(newUser.id, (er) => {
                 if (er) {
                     return next(er);
@@ -43,23 +40,22 @@ router.post('/register', middleware.registerRouteValidator, (req, res, next) => 
     });
 });
 
+// success redirect after req to log in
 router.get('/success', middleware.isLoggedIn, (req, res, next) => {
-    console.log('req.user: --', req.user);
-    console.log('ident. --', req.isAuthenticated());
     res.send('logged in successfully');
 });
 
+// failure redirect after req to log in
 router.get('/failure', (req, res, next) => {
     res.send('plz check your username or password');
 });
 
-//  login post route
+//  POST /login route
 router.post('/login',
     passport.authenticate('local', {
         successRedirect: '/success',
         failureRedirect: '/failure',
     }));
-
 
 passport.serializeUser((id, done) => {
     done(null, id);
